@@ -8,6 +8,22 @@ use Auth;
 
 class UsersController extends Controller
 {
+
+    public function __construct()
+    {
+
+        //只允许已登录用户的操作
+        $this->middleware('auth',[
+            'except'=>['show','create','store']
+            ]);
+
+        //只允许未登录用户的操作
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
+
     public function create()
     {
     	return view('users.create');
@@ -20,11 +36,13 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.edit',compact('user'));
     }
 
     public function update(User $user,Request $request)
     {
+        $this->authorize('update', $user);
         $this->validate($request, [
             'name' => 'required|max:50',
             'password' => 'nullable|confirmed|min:6'
@@ -58,7 +76,7 @@ class UsersController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        Auth::login($user);
+        Auth::login($user); //认证登录
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
         return redirect()->route('users.show', [$user]);    	
 
