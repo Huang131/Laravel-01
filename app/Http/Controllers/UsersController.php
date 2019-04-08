@@ -14,7 +14,7 @@ class UsersController extends Controller
 
         //只允许已登录用户的操作
         $this->middleware('auth',[
-            'except'=>['show','create','store']
+            'except'=>['show','create','store','index']
             ]);
 
         //只允许未登录用户的操作
@@ -23,6 +23,11 @@ class UsersController extends Controller
         ]);
     }
 
+    public function index()
+    {
+        $users=User::paginate(10);
+        return view('users.index',compact('users'));
+    }
 
     public function create()
     {
