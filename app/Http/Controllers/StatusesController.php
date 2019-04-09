@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class StatusesController extends Controller
 {
@@ -11,7 +12,7 @@ class StatusesController extends Controller
         $this->middleware('auth');
     }
 
-    
+
     public function store(Request $request)
     {
         $this->validate($request, [
